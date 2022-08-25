@@ -1,0 +1,259 @@
+          #######TALLER 2########
+   ###Kevin Jose Caceres Contreras#####
+     ###Wilfran Ballesteros Diaz###
+     
+       #PUNTO 1
+
+#Exportar el conjunto de datos gapminder en formato "xlsx". El 10 %
+#de los valores de las columnas lifeEx, pop, y gdpPercap se debe
+#reemplazar de forma aleatoria por valores no asignados NA.
+
+#instalar openxlsx
+install.packages("openxlsx")
+library(openxlsx)
+library(gapminder)
+#Encontrar las dimensiones
+d=dim(gapminder)
+d
+X=(0.1*d[1])
+X=as.integer(X)
+X
+indi1=sample(1:d[1],X)
+indi2=sample(1:d[1],X)
+indi3=sample(1:d[1],X)
+
+x2=list(indi1,indi2,indi3)
+
+gapminder$lifeExp[indi1]=NA
+gapminder$pop[indi2]=NA
+gapminder$gdpPercap[indi3]=NA
+
+#Importar el archivo gapminder en formato "xlsx".
+write.xlsx(gapminder,"gapminder1_open.xlsx")
+df<- read.xlsx("gapminder1_open.xlsx")
+df
+# x2=list(indi,indi2,indi3)
+cc =  1
+for (i in df[][4:6]){
+  m1 <- mean(i, na.rm = TRUE)
+  print(m1)
+  indi = x2[cc]
+  cc=cc+1
+  i[indi[[1]]]=m1
+}
+
+m1 <- mean(df$lifeExp, na.rm = TRUE)
+df$lifeExp[indi]=m1
+m1 <- mean(df$gdpPercap, na.rm = TRUE)
+df$gdpPercap[indi]=m1
+m1 <- mean(df$lifeExp, na.rm = TRUE)
+df$lifeExp[indi]=m1
+
+#Graficar el diagrama de dispersion lifeEx vs pop.
+install.packages("ggplot2")
+library(ggplot2)
+ggplot(df, aes(lifeExp, log(gdpPercap),col=continent)) + geom_point()
+ggplot(df, aes(lifeExp, log(gdpPercap),col=continent)) + geom_point()
+
+#El diagrama de dispersion gdpPercap vs pop.
+ggplot(df, aes(log(gdpPercap), log(pop),col=continent)) + geom_point()
+ggplot(df, aes(log(gdpPercap), log(pop),col=continent)) + geom_point()
+
+#Graficar los diagramas de cajas de la variable gdpPercap discrimina-
+#dos por continentes desde 1990 a 2007.
+install.packages("dplyr")
+library(dplyr)
+boxplot5=gapminder%>%select(gdpPercap,continent, year)%>%
+  filter(year>=1990)
+boxplot(gdpPercap~continent,data=boxplot5)
+
+
+
+              #PUNTO 2
+#inciso A
+
+#cargar dos archivos en formato csv llamados Experimento_a.csv y Experimento_b.csv e indicar
+#si la diferencia en la media de los datos es estadisticamente significativa
+
+Experimento_a <- read.csv("C:/Users/LENOVO/OneDrive/Documentos/LENGUAJES_ESTADISTICOS/DATAFRAME/Experimento_a.csv",                 # Nombre del archivo o ruta completa del archivo
+         header = TRUE,        # Leer el encabezado (TRUE) o no (FALSE)
+         sep = ";")           # Separador de los valores
+
+
+Experimento_b <- read.csv("C:/Users/LENOVO/OneDrive/Documentos/LENGUAJES_ESTADISTICOS/DATAFRAME/Experimento_b.csv",
+         header=TRUE,
+         sep=";")
+
+#help(t.test)
+
+t.test(Experimento_a,Experimento_b, 
+       alternative=c("two.sided"))
+#la difrencia en la media estadicamente es significativamente diferente, ya que p_valor es inferior al 5%
+
+#inciso B
+
+#help(cor)
+cor(Experimento_a,Experimento_b,
+    method="pearson")
+cor(Experimento_a,Experimento_b,
+    method="spearman")
+
+
+
+plot(Experimento_a[1:100, ],Experimento_b[1:100,])
+dim(Experimento_a)
+#Aqui no hay correracion porque los datos estan dispersos
+
+#inciso c
+
+#help(cor)
+cor(Experimento_a,Experimento_b,
+    method="pearson")
+cor(Experimento_a,Experimento_b,
+    method="spearman")
+
+
+
+modelo=lm(Experimento_b[1:100, ]~Experimento_a[1:100, ])
+plot(Experimento_a[1:100, ],Experimento_b[1:100,])
+abline(modelo,col="red")
+
+          #PUNTO 3
+
+#inciso A
+#Graficar las funciones de densidad y distribuci ́on de una distribuci ́on
+#uniforme.
+
+#Graficar las funciones de densidad
+plotunif <- function(x, min = 0, max = 1, lwd = 1, col = 1, ...) {
+  
+  # Rejilla de valores del eje X
+  if (missing(x)) {
+    x <- seq(min - 0.5, max + 0.5, 0.01)
+  }
+  
+  if(max < min) {
+    stop("'min' must be lower than 'max'")
+  }
+  
+  plot(x, dunif(x, min = min, max = max),
+       xlim = c(min - 0.25, max + 0.25), type = "l",
+       lty = 0, ylab = "f(x)", ...) 
+  segments(min, 1/(max - min), max, 1/(max - min), col = col, lwd = lwd)
+  segments(min - 2, 0, min, 0, lwd = lwd, col = col)
+  segments(max, 0, max + 2, 0, lwd = lwd, col = col)
+  points(min, 1/(max - min), pch = 19, col = col)
+  points(max, 1/(max - min), pch = 19, col = col)
+  segments(min, 0, min, 1/(max - min), lty = 2, col = col, lwd = lwd)
+  segments(max, 0, max, 1/(max - min), lty = 2, col = col, lwd = lwd)
+  points(0, min, pch = 21, col = col, bg = "white")
+  points(max, min, pch = 21, col = col, bg = "white")
+}
+plotunif(min = 0, max = 1, lwd = 2, col = 4, main = "PDF uniforme")
+
+#distribuci ́on de una distribuci ́on uniforme.
+
+unif_area <- function(min = 0, max = 1, lb, ub, col = 1,
+                      acolor = "lightgray", ...) {
+  x <- seq(min - 0.25 * max, max + 0.25 * max, 0.001) 
+  
+  if (missing(lb)) {
+    lb <- min(x)
+  }
+  if (missing(ub)) {
+    ub <- max(x)
+  }
+  if(max < min) {
+    stop("'min' must be lower than 'max'")
+  }
+  
+  x2 <- seq(lb, ub, length = 1000) 
+  plot(x, dunif(x, min = min, max = max),
+       xlim = c(min - 0.25 * max, max + 0.25 * max), type = "l",
+       ylab = "f(x)", lty = 0, ...)   
+  
+  y <- dunif(x2, min = min, max = max)
+  polygon(c(lb, x2, ub), c(0, y, 0), col = acolor, lty = 0)
+  segments(min, 1/(max - min), max, 1/(max - min), lwd = 2, col = col)
+  segments(min - 2 * max, 0, min, 0, lwd = 2, col = col)
+  segments(max, 0, max + 2 * max, 0, lwd = 2, col = col)
+  points(min, 1/(max - min), pch = 19, col = col)
+  points(max, 1/(max - min), pch = 19, col = col)
+  segments(min, 0, min, 1/(max - min), lty = 2, col = col, lwd = 2)
+  segments(max, 0, max, 1/(max - min), lty = 2, col = col, lwd = 2)
+  points(0, min, pch = 21, col = col, bg = "white")
+  points(max, min, pch = 21, col = col, bg = "white")
+}
+
+unif_area(min = 0, max = 60, lb = 0, ub = 15)
+text(8, 0.008, "25%", srt = 90, cex = 1.2)
+
+
+#inciso B
+
+#graficar la funcion de densidad y distribuccion de una distribucion Benourlli
+
+
+###graficar la funcion de densidad
+
+
+#Rejilla de valores del eje X
+x <- 0:1
+
+plot(dbinom(x, size = 1, prob = 0.5), type = "h", lwd = 2,
+     main = "Función de probabilidad binomial",
+     ylab = "P(X = x)", xlab = "Número de éxitos")
+
+#distribuccion de una distribucion Benourlli
+
+plot(pbinom(x, size = 1, prob = 0.5), type = "h", lwd = 2,
+     main = "Función de probabilidad binomial",
+     ylab = "P(X <= x)", xlab = "Número de éxitos")
+
+#Inciso C
+##graficar la funcion de densidad y distribuccion de una distribucion Poisson
+
+#graficar la funcion de densidad
+x <- 0:50
+lambda <- 10
+plot(dpois(x, lambda), type = "h", lwd = 2,
+     main = "Función de masa de probabilidad",
+     ylab = "P(X = x)", xlab = "Número de eventos")
+
+#distribuccion de una distribucion Poisson
+plot(ppois(x, lambda), type = "h", lwd = 2,
+     main = "Función de masa de probabilidad",
+     ylab = "P(X = x)", xlab = "Número de eventos")
+
+#Inciso D
+###graficar la funcion de densidad y distribuccion de una distribucion Exponencial
+
+
+#graficar la funcion de densidad
+# Rejilla del eje X
+x <- seq(0, 8, 0.1)
+
+# lambda = 2
+plot(x, dexp(x, 2), type = "l",
+     ylab = "f(x)", lwd = 2, col = "red")
+# lambda = 1
+lines(x, dexp(x, rate = 1), col = "blue", lty = 1, lwd = 2)
+
+# Agregamos una leyenda
+legend("topright", c(expression(paste(, lambda)), "2", "1"),
+       lty = c(0, 1, 1), col = c("blue", "red"), box.lty = 0, lwd = 2)
+
+
+#distribuccion de una distribucion Exponencial
+
+x <- seq(0, 8, 0.1)
+
+plot(x, pexp(x, 2), type = "l",
+     ylab = "f(x)", lwd = 2, col = "red")
+
+lines(x, dexp(x, rate = 1), col = "blue", lty = 1, lwd = 2)
+
+legend("topright", c(expression(paste(, lambda)), "2", "1"),
+       lty = c(0, 1, 1), col = c("blue", "red"), box.lty = 0, lwd = 2)
+
+ 
